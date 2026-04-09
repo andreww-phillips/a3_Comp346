@@ -45,9 +45,13 @@ public class Monitor
 	 * Else forces the philosopher to wait()
 	 */
 	@SuppressWarnings("UnnecessaryLocalVariable")
-    public synchronized void pickUp(final int piTID)
-	{	
-		while(philosopherStates[piTID].equals(EATING) || philosopherStates[piTID].equals(TALKING)){
+	public synchronized void pickUp(final int piTID)
+	{
+		int id = piTID - 1;  // ← convert FIRST
+		int leftChopstick = id;
+		int rightChopstick = (id + 1) % NUMBER_OF_CHOPSTICKS;
+
+		while(philosopherStates[id].equals(EATING) || philosopherStates[id].equals(TALKING)){
 			try{
 				wait();
 			} catch(InterruptedException e){
@@ -55,14 +59,11 @@ public class Monitor
 				DiningPhilosophers.reportException(e);
 				System.exit(1);
 			}
-    	}
-		int leftChopstick = piTID;
-		int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
-
+		}
 		while(chopsticksInUse[leftChopstick] || chopsticksInUse[rightChopstick]){
 			try{
 				wait();
-			} catch (InterruptedException e){
+			} catch(InterruptedException e){
 				System.err.println("Monitor.pickUp():");
 				DiningPhilosophers.reportException(e);
 				System.exit(1);
@@ -70,82 +71,58 @@ public class Monitor
 		}
 		chopsticksInUse[leftChopstick] = true;
 		chopsticksInUse[rightChopstick] = true;
-		philosopherStates[piTID] = EATING;
+		philosopherStates[id] = EATING;
 		System.out.println("Philosopher " + piTID + " has picked up chopsticks " + leftChopstick + " and " + rightChopstick + " and is now eating.");
-	
 	}
 
-	/**
-	 * When a given philosopher's done eating, they put the chopsticks/forks down
-	 * and let others know they are available.
-	 */
-	@SuppressWarnings("UnnecessaryLocalVariable")
-    public synchronized void putDown(final int piTID)
+	public synchronized void putDown(final int piTID)
 	{
-		if(philosopherStates[piTID].equals(EATING)){
-			int leftChopstick = piTID;
-			int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
+		int id = piTID - 1;  // ← convert FIRST
+		int leftChopstick = id;
+		int rightChopstick = (id + 1) % NUMBER_OF_CHOPSTICKS;
 
+		if(philosopherStates[id].equals(EATING)){
 			chopsticksInUse[leftChopstick] = false;
 			chopsticksInUse[rightChopstick] = false;
-			philosopherStates[piTID] = THINKING;
+			philosopherStates[id] = THINKING;
 			System.out.println("Philosopher " + piTID + " has put down chopsticks " + leftChopstick + " and " + rightChopstick + " and is now thinking.");
 			notifyAll();
 		}
 	}
 
-	/**
-	 * Only one philosopher at a time is allowed to philosophy
-	 * (while she is not eating).
-	 */
 	public synchronized void requestTalk(final int piTID)
-{
-		while(philosopherStates[piTID].equals(EATING) || philosopherStates[piTID].equals(TALKING)){
+	{
+		int id = piTID - 1;  // ← convert FIRST
+
+		while(philosopherStates[id].equals(EATING) || isSomeoneTalking()){
 			try{
 				wait();
 			} catch(InterruptedException e){
-				System.err.println("Monitor.pickUp():");
+				System.err.println("Monitor.requestTalk():");
 				DiningPhilosophers.reportException(e);
 				System.exit(1);
 			}
-    	}
-        
-        // Wait while ANY other philosopher is talking
-        boolean someoneIsTalking = true;
-        while(someoneIsTalking){
-            someoneIsTalking = false;
-            for(int i = 0; i < philosopherStates.length; i++){
-                if(philosopherStates[i].equals(TALKING)){
-                    someoneIsTalking = true;
-                    break;
-                }
-            }
-            if(someoneIsTalking){
-                try{
-                    wait();
-                } catch(InterruptedException e){
-                    System.err.println("Monitor.requestTalk():");
-                    DiningPhilosophers.reportException(e);
-                    System.exit(1);
-                }
-            }
-        }
-        philosopherStates[piTID] = TALKING;
-        System.out.println("Philosopher " + piTID + " has started talking.");
-    }
+		}
+		philosopherStates[id] = TALKING;
+		System.out.println("Philosopher " + piTID + " has started talking.");
+	}
 
-
-	/**
-	 * When one philosopher is done talking stuff, others
-	 * can feel free to start talking.
-	 */
 	public synchronized void endTalk(final int piTID)
 	{
-		if(philosopherStates[piTID].equals(TALKING)){
-			philosopherStates[piTID] = THINKING;
+		int id = piTID - 1;  // ← convert FIRST
+
+		if(philosopherStates[id].equals(TALKING)){
+			philosopherStates[id] = THINKING;
 			System.out.println("Philosopher " + piTID + " has stopped talking and is now thinking.");
 			notifyAll();
 		}
+	}
+
+	private boolean isSomeoneTalking(){
+		for(String state : philosopherStates){
+			if(state.equals(TALKING)) return true;
+		}
+		return false;
 	}
 }
 
