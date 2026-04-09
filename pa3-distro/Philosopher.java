@@ -124,11 +124,12 @@ public class Philosopher extends BaseThread
 	{
 		String[] astrPhrases =
 		{
-			"Eh, it's not easy to be a philosopher: eat, think, talk, eat...",
-			"You know, true is false and false is true if you think of it",
-			"2 + 2 = 5 for extremely large values of 2...",
-			"If thee cannot speak, thee must be silent",
-			"My number is " + getTID() + ""
+			"To be or not to be? That is the question.",
+			"I like tacos!",
+			"Life that is easy is no life worth living.",
+			"Why do we park in a driveway and drive on a parkway?",
+			"If humans can see water but not air, can fish see air but not water?",
+			"If a tree falls in a forest and no one is around to hear it, does it make a sound?"
 		};
 
 		System.out.println
