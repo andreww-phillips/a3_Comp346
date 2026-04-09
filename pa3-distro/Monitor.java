@@ -11,14 +11,14 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
-
+	private final int NUMBER_OF_CHOPSTICKS;
 
 	/**
 	 * Constructor
 	 */
 	public Monitor(int piNumberOfPhilosophers)
 	{
-		// TODO: set appropriate number of chopsticks based on the # of philosophers
+		this.NUMBER_OF_CHOPSTICKS = piNumberOfPhilosophers;
 	}
 
 	/*
@@ -33,7 +33,7 @@ public class Monitor
 	 */
 	public synchronized void pickUp(final int piTID)
 	{
-		// ...
+		
 	}
 
 	/**
