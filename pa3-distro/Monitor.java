@@ -11,13 +11,15 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
+	public final int NUMBER_OF_CHOPSTICKS;
+	public boolean[] chopsticksInUse;
+
 	public final String THINKING = "THINKING";
 	public final String WAITING = "WAITING";
 	public final String EATING = "EATING";
 	public final String TALKING = "TALKING";
 
 	String[] philosopherStates;
-	int numOfChopsticks;
 
 	/**
 	 * Constructor
@@ -25,6 +27,7 @@ public class Monitor
 	public Monitor(int piNumberOfPhilosophers)
 	{
 		this.NUMBER_OF_CHOPSTICKS = piNumberOfPhilosophers;
+		this.chopsticksInUse = new boolean[piNumberOfPhilosophers];
 	}
 
 	/*
@@ -38,8 +41,25 @@ public class Monitor
 	 * Else forces the philosopher to wait()
 	 */
 	public synchronized void pickUp(final int piTID)
-	{
-		
+	{	
+		if(philosopherStates[piTID] != EATING){
+			int leftChopstick = piTID;
+			int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
+
+			while(chopsticksInUse[leftChopstick] || chopsticksInUse[rightChopstick]){
+				try{
+					wait();
+				} catch (InterruptedException e){
+					System.err.println("Monitor.pickUp():");
+					DiningPhilosophers.reportException(e);
+					System.exit(1);
+				}
+			}
+			chopsticksInUse[leftChopstick] = true;
+			chopsticksInUse[rightChopstick] = true;
+			philosopherStates[piTID] = EATING;
+			System.out.println("Philosopher " + piTID + " has picked up chopsticks " + leftChopstick + " and " + rightChopstick + " and is now eating.");
+		}	
 	}
 
 	/**
