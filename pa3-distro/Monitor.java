@@ -1,3 +1,4 @@
+import common.*;
 /**
  * Class Monitor
  * To synchronize dining philosophers.
