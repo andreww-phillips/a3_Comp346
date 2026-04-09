@@ -42,7 +42,7 @@ public class Monitor
 	 */
 	public synchronized void pickUp(final int piTID)
 	{	
-		if(philosopherStates[piTID] != EATING){
+		if(philosopherStates[piTID] != EATING && philosopherStates[piTID] != TALKING){
 			int leftChopstick = piTID;
 			int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
 
@@ -68,7 +68,16 @@ public class Monitor
 	 */
 	public synchronized void putDown(final int piTID)
 	{
-		// ...
+		if(philosopherStates[piTID] == EATING){
+			int leftChopstick = piTID;
+			int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
+
+			chopsticksInUse[leftChopstick] = false;
+			chopsticksInUse[rightChopstick] = false;
+			philosopherStates[piTID] = THINKING;
+			System.out.println("Philosopher " + piTID + " has put down chopsticks " + leftChopstick + " and " + rightChopstick + " and is now thinking.");
+			notifyAll();
+		}
 	}
 
 	/**
