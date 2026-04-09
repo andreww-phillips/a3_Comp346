@@ -27,6 +27,10 @@ public class Monitor
 	{
 		this.NUMBER_OF_CHOPSTICKS = piNumberOfPhilosophers;
 		this.chopsticksInUse = new boolean[piNumberOfPhilosophers];
+		this.philosopherStates = new String[piNumberOfPhilosophers];
+		for(int i = 0; i < philosopherStates.length; i++){
+			philosopherStates[i] = THINKING;
+		}
 	}
 
 	/*
