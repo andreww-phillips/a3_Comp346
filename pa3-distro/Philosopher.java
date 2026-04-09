@@ -1,4 +1,4 @@
-import common.BaseThread;
+import common.*;
 
 /**
  * Class Philosopher.

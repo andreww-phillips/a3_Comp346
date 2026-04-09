@@ -1,3 +1,4 @@
+import common.*;
 /**
  * Class DiningPhilosophers
  * The main starter.
