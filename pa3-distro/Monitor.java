@@ -11,7 +11,13 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
+	public final String THINKING = "THINKING";
+	public final String WAITING = "WAITING";
+	public final String EATING = "EATING";
+	public final String TALKING = "TALKING";
 
+	String[] philosopherStates;
+	int numOfChopsticks;
 
 	/**
 	 * Constructor
