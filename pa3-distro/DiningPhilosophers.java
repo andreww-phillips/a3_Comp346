@@ -24,7 +24,7 @@ public class DiningPhilosophers
 	public static final int DINING_STEPS = 10;
 
 	/**
-	 * Our shared monitor for the philosphers to consult
+	 * Our shared monitor for the philosophers to consult
 	 */
 	public static Monitor soMonitor = null;
 
@@ -48,6 +48,27 @@ public class DiningPhilosophers
 			 */
 			int iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
 
+			if (argv.length > 0) // If argument is provided
+			{
+				try
+				{
+					int numOfPhilosophers = Integer.parseInt(argv[0]); // Convert argument to int
+					if (numOfPhilosophers > 0) // If valid int
+					{
+						iPhilosophers = numOfPhilosophers; // Overwrite default
+					}
+					else
+					{
+						System.err.println("\"" + numOfPhilosophers + "\" is not a positive integer" );
+						System.err.println("Usage: java DiningPhilosophers [" + DEFAULT_NUMBER_OF_PHILOSOPHERS + "]");
+					}
+				}
+				catch (Exception e)
+				{
+					System.err.println("Error");
+					System.err.println("Usage: java DiningPhilosophers [" + DEFAULT_NUMBER_OF_PHILOSOPHERS + "]");
+				}
+			}
 			// Make the monitor aware of how many philosophers there are
 			soMonitor = new Monitor(iPhilosophers);
 
