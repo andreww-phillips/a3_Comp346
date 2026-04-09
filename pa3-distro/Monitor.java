@@ -84,18 +84,37 @@ public class Monitor
 	 * Only one philopher at a time is allowed to philosophy
 	 * (while she is not eating).
 	 */
-	public synchronized void requestTalk()
+	public synchronized void requestTalk(final int piTID)
 	{
-		// ...
+		if(philosopherStates[piTID] != EATING && philosopherStates[piTID] != TALKING){
+			for(int i = 0; i < philosopherStates.length; i++){
+				if(philosopherStates[i] == TALKING){
+					try{
+						wait();
+					}catch(InterruptedException e){
+						System.err.println("Monitor.requestTalk():");
+						DiningPhilosophers.reportException(e);
+						System.exit(1);
+					}	
+				}else{
+					philosopherStates[piTID] = TALKING;
+					System.out.println("Philosopher " + piTID + " has started talking.");
+				}
+			}
+		}
 	}
 
 	/**
 	 * When one philosopher is done talking stuff, others
 	 * can feel free to start talking.
 	 */
-	public synchronized void endTalk()
+	public synchronized void endTalk(final int piTID)
 	{
-		// ...
+		if(philosopherStates[piTID] == TALKING){
+			philosopherStates[piTID] = THINKING;
+			System.out.println("Philosopher " + piTID + " has stopped talking and is now thinking.");
+			notifyAll();
+		}
 	}
 }
 
