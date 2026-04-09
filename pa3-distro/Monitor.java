@@ -104,7 +104,7 @@ public class Monitor
 			}
 		}
 		philosopherStates[id] = TALKING;
-		System.out.println("Philosopher " + piTID + " has started talking.");
+		// System.out.println("Philosopher " + piTID + " has started talking.");
 	}
 
 	public synchronized void endTalk(final int piTID)
@@ -113,7 +113,7 @@ public class Monitor
 
 		if(philosopherStates[id].equals(TALKING)){
 			philosopherStates[id] = THINKING;
-			System.out.println("Philosopher " + piTID + " has stopped talking and is now thinking.");
+			System.out.println("Philosopher " + piTID + " is now thinking.");
 			notifyAll();
 		}
 	}
