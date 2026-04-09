@@ -11,7 +11,6 @@ public class Monitor
 	 * Data members
 	 * ------------
 	 */
-	private final int NUMBER_OF_CHOPSTICKS;
 	public final String THINKING = "THINKING";
 	public final String WAITING = "WAITING";
 	public final String EATING = "EATING";
