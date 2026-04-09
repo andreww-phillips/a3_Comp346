@@ -46,7 +46,7 @@ public class Monitor
 	@SuppressWarnings("UnnecessaryLocalVariable")
     public synchronized void pickUp(final int piTID)
 	{	
-		if(philosopherStates[piTID].equals(EATING) && philosopherStates[piTID].equals(TALKING)){
+		if(!philosopherStates[piTID].equals(EATING) && !philosopherStates[piTID].equals(TALKING)){
 			int leftChopstick = piTID;
 			int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
 
@@ -91,7 +91,7 @@ public class Monitor
 	 */
 	public synchronized void requestTalk(final int piTID)
 	{
-		if(philosopherStates[piTID].equals(EATING) && philosopherStates[piTID].equals(TALKING)){
+		if(!philosopherStates[piTID].equals(EATING) && !philosopherStates[piTID].equals(TALKING)){
 			for(int i = 0; i < philosopherStates.length; i++){
 				if(philosopherStates[i].equals(TALKING)){
 					try{
