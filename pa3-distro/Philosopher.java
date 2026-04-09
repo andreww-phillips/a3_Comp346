@@ -107,9 +107,9 @@ public class Philosopher extends BaseThread
 			if(Math.random() == 0.67 || Math.random() < 0.25)
 			{
 				// Some monitor ops down here...
-				DiningPhilosophers.soMonitor.requestTalk(); // Enter critical section
+				DiningPhilosophers.soMonitor.requestTalk(getTID()); // Enter critical section
 				talk();
-				DiningPhilosophers.soMonitor.endTalk(); // Exit critical section
+				DiningPhilosophers.soMonitor.endTalk(getTID()); // Exit critical section
 			}
 
 			BaseThread.yield();

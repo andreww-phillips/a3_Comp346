@@ -15,7 +15,6 @@ public class Monitor
 	public boolean[] chopsticksInUse;
 
 	public final String THINKING = "THINKING";
-	public final String WAITING = "WAITING";
 	public final String EATING = "EATING";
 	public final String TALKING = "TALKING";
 
@@ -40,9 +39,10 @@ public class Monitor
 	 * Grants request (returns) to eat when both chopsticks/forks are available.
 	 * Else forces the philosopher to wait()
 	 */
-	public synchronized void pickUp(final int piTID)
+	@SuppressWarnings("UnnecessaryLocalVariable")
+    public synchronized void pickUp(final int piTID)
 	{	
-		if(philosopherStates[piTID] != EATING && philosopherStates[piTID] != TALKING){
+		if(philosopherStates[piTID].equals(EATING) && philosopherStates[piTID].equals(TALKING)){
 			int leftChopstick = piTID;
 			int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
 
@@ -63,12 +63,13 @@ public class Monitor
 	}
 
 	/**
-	 * When a given philosopher's done eating, they put the chopstiks/forks down
+	 * When a given philosopher's done eating, they put the chopsticks/forks down
 	 * and let others know they are available.
 	 */
-	public synchronized void putDown(final int piTID)
+	@SuppressWarnings("UnnecessaryLocalVariable")
+    public synchronized void putDown(final int piTID)
 	{
-		if(philosopherStates[piTID] == EATING){
+		if(philosopherStates[piTID].equals(EATING)){
 			int leftChopstick = piTID;
 			int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
 
@@ -81,14 +82,14 @@ public class Monitor
 	}
 
 	/**
-	 * Only one philopher at a time is allowed to philosophy
+	 * Only one philosopher at a time is allowed to philosophy
 	 * (while she is not eating).
 	 */
 	public synchronized void requestTalk(final int piTID)
 	{
-		if(philosopherStates[piTID] != EATING && philosopherStates[piTID] != TALKING){
+		if(philosopherStates[piTID].equals(EATING) && philosopherStates[piTID].equals(TALKING)){
 			for(int i = 0; i < philosopherStates.length; i++){
-				if(philosopherStates[i] == TALKING){
+				if(philosopherStates[i].equals(TALKING)){
 					try{
 						wait();
 					}catch(InterruptedException e){
@@ -110,7 +111,7 @@ public class Monitor
 	 */
 	public synchronized void endTalk(final int piTID)
 	{
-		if(philosopherStates[piTID] == TALKING){
+		if(philosopherStates[piTID].equals(TALKING)){
 			philosopherStates[piTID] = THINKING;
 			System.out.println("Philosopher " + piTID + " has stopped talking and is now thinking.");
 			notifyAll();
