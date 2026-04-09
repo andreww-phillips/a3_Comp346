@@ -26,7 +26,7 @@ public class Monitor
 	 * User-defined monitor procedures
 	 * -------------------------------
 	 */
-
+	
 	/**
 	 * Grants request (returns) to eat when both chopsticks/forks are available.
 	 * Else forces the philosopher to wait()
