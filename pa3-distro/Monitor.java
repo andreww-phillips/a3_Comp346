@@ -46,24 +46,32 @@ public class Monitor
 	@SuppressWarnings("UnnecessaryLocalVariable")
     public synchronized void pickUp(final int piTID)
 	{	
-		if(!philosopherStates[piTID].equals(EATING) && !philosopherStates[piTID].equals(TALKING)){
-			int leftChopstick = piTID;
-			int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
-
-			while(chopsticksInUse[leftChopstick] || chopsticksInUse[rightChopstick]){
-				try{
-					wait();
-				} catch (InterruptedException e){
-					System.err.println("Monitor.pickUp():");
-					DiningPhilosophers.reportException(e);
-					System.exit(1);
-				}
+		while(philosopherStates[piTID].equals(EATING) || philosopherStates[piTID].equals(TALKING)){
+			try{
+				wait();
+			} catch(InterruptedException e){
+				System.err.println("Monitor.pickUp():");
+				DiningPhilosophers.reportException(e);
+				System.exit(1);
 			}
-			chopsticksInUse[leftChopstick] = true;
-			chopsticksInUse[rightChopstick] = true;
-			philosopherStates[piTID] = EATING;
-			System.out.println("Philosopher " + piTID + " has picked up chopsticks " + leftChopstick + " and " + rightChopstick + " and is now eating.");
-		}	
+    	}
+		int leftChopstick = piTID;
+		int rightChopstick = (piTID + 1) % NUMBER_OF_CHOPSTICKS;
+
+		while(chopsticksInUse[leftChopstick] || chopsticksInUse[rightChopstick]){
+			try{
+				wait();
+			} catch (InterruptedException e){
+				System.err.println("Monitor.pickUp():");
+				DiningPhilosophers.reportException(e);
+				System.exit(1);
+			}
+		}
+		chopsticksInUse[leftChopstick] = true;
+		chopsticksInUse[rightChopstick] = true;
+		philosopherStates[piTID] = EATING;
+		System.out.println("Philosopher " + piTID + " has picked up chopsticks " + leftChopstick + " and " + rightChopstick + " and is now eating.");
+	
 	}
 
 	/**
@@ -90,24 +98,41 @@ public class Monitor
 	 * (while she is not eating).
 	 */
 	public synchronized void requestTalk(final int piTID)
-	{
-		if(!philosopherStates[piTID].equals(EATING) && !philosopherStates[piTID].equals(TALKING)){
-			for(int i = 0; i < philosopherStates.length; i++){
-				if(philosopherStates[i].equals(TALKING)){
-					try{
-						wait();
-					}catch(InterruptedException e){
-						System.err.println("Monitor.requestTalk():");
-						DiningPhilosophers.reportException(e);
-						System.exit(1);
-					}	
-				}else{
-					philosopherStates[piTID] = TALKING;
-					System.out.println("Philosopher " + piTID + " has started talking.");
-				}
+{
+		while(philosopherStates[piTID].equals(EATING) || philosopherStates[piTID].equals(TALKING)){
+			try{
+				wait();
+			} catch(InterruptedException e){
+				System.err.println("Monitor.pickUp():");
+				DiningPhilosophers.reportException(e);
+				System.exit(1);
 			}
-		}
-	}
+    	}
+        
+        // Wait while ANY other philosopher is talking
+        boolean someoneIsTalking = true;
+        while(someoneIsTalking){
+            someoneIsTalking = false;
+            for(int i = 0; i < philosopherStates.length; i++){
+                if(philosopherStates[i].equals(TALKING)){
+                    someoneIsTalking = true;
+                    break;
+                }
+            }
+            if(someoneIsTalking){
+                try{
+                    wait();
+                } catch(InterruptedException e){
+                    System.err.println("Monitor.requestTalk():");
+                    DiningPhilosophers.reportException(e);
+                    System.exit(1);
+                }
+            }
+        }
+        philosopherStates[piTID] = TALKING;
+        System.out.println("Philosopher " + piTID + " has started talking.");
+    }
+
 
 	/**
 	 * When one philosopher is done talking stuff, others
